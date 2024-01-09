@@ -1,8 +1,10 @@
 This is a Step-by-Step guide to integrate Jenkins with Github
 
-We have a project written on NodeJS called as todo-list-app. We will create a Docker image of it using Dockerfile and will deploy the project on the node on port no.8000.
+We have a project written on NodeJS called todo-list-app. We will create a Docker image of it using Dockerfile and will deploy the project on the node on port no.8000.
 Jenkins runs on port 8080
-Upload the project code to the GitHub account
+Upload the project code to the GitHub account.
+We will also automate the build trigger later using webhook for continuous Deployment
+NodeJS project is not built by me.
 Note:- Make sure to open all required ports and configure them in Security Grroup.
 
 Steps:-
@@ -93,5 +95,42 @@ Steps:-
         .Copy the Public Key
         .Click Add SSH
         .Authenticate token from phone 
+
+
+We can also automate the Build trigger so that as soon as there are any changes in the code build will be triggered and the new code will be deployed. We will use WebHook on GitHub.
+We also need to install plugins in Jenkins
+Please follow the below given steps.
+
+
+1.> Jenkins:- 
+
+Installing Plugin
+    .Go to Jenkins Dashboard
+    .Manage Jenkins
+    .Plugin Manager
+    .Available Plugins
+    .Use "GitHub Integration" plugin
+    .select Download now and install after restart
+
+Adding trigger
+    .Jenkins Dashboard
+    .todo-node-app
+    .Configure
+    .Build triggers Check "GitHub hook triggers for GitScm polling"
+    .Save
+
+
+2.> GitHub
+
+Adding WebHook in GitHub repo
+    .Repository settings
+    .Webhooks
+    .Add Webhook
+    .Payload URL (give jenkins URL which is "http://0.0.0.0:8080/github-webhook/")
+    .Change Content Type to "application/json"
+    .Click on add WebHook
+
+
+Once there are any code changes in the GitHub, Webhook will trigger the Build in Jenkins automatically.
 
     
