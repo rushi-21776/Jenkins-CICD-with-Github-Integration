@@ -2,6 +2,7 @@ This is a Step-by-Step guide to integrate Jenkins with Github
 
 We have a project written on NodeJS called as todo-list-app. We will create a Docker image of it using Dockerfile and will deploy the project on the node on port no.8000.
 Jenkins runs on port 8080
+Upload the project code to the GitHub account
 Note:- Make sure to open all required ports and configure them in Security Grroup.
 
 Steps:-
@@ -11,6 +12,7 @@ Steps:-
     #sudo apt update
     #sudo apt install openjdk-11-jre
     #java -version
+    #sudo apt install docker.io
     #sudo wget -O /usr/share/keyrings/jenkins-keyring.asc https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
     #echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/ | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
     #sudo apt-get update
@@ -18,4 +20,78 @@ Steps:-
     #systemctl enable jenkins
     #systemctl start jenkins
     #systemctl status jenkins
+
+    Check the status of jenkins in the browser by using the machine IP and port 8080 ex:- 0.0.0.0:8080
+
+    Generate SSH keys
+    #ssh-keygen
+    #cat ~/.ssh/id_rsa.pub  --> Public key
+    #cat ~/.ssh/id_rsa      --> Private key
+
+    Copy the code from GitHub to machine and install NodeJS
+    #sudo apt install npm
+    #npm install
+    #node app.js
+    Check if the application is working on the browser on port no.8000
+    Crtl+c
+
+    Creating a Docker file to containerize the application
+    #vi Dockerfile
+
+    FROM node:12.2.0-alpine
+    WORKDIR app
+    COPY . .
+    RUN npm install
+    EXPOSE 8000
+    CMD ["node","app.js"]
+
+    Run the following command to build the docker image from the dockerfile and check if the container is working. Also, provide docker user the required permission.
+    #sudo usermod -a -G docker $USER
+    #sudo usermod -a -G docker jenkins
+    #docker build -t todo-node-app .
+    #docker run -d --name node-todo-app -p 8000:8000 todo-node-app
+    #sudo chmod 777 /var/lib/jenkins/workspace/todo-node-app
+    #sudo reboot
+
+
+2.> Setup Jenkins
+    Enter the password found in the VM in /var/lib/jenkins/secrets/installAdminPassword
+    Use Install Suggested Plugins
+    Create User   
+        . Username
+        . Password
+        . Full name
+        . Email
+
+    Login to Jenkins and setup Build options.
+        .Create new item 
+        .Give a name
+        .Use Freestyle Project
+        .Provide Description if required
+        .Select GitHub Project
+        .Project URL
+        .Source Code --> GitHub
+        .Project URL
+        .Add credentials 
+        .Select SSH key in Kind dropdown
+        .Provide ID
+        .Provide Username (Instance Name)
+        .Provide Private Key generated in the VM. (id_rsa)
+        .Select branch (*/master)
+        .Build Steps use Bash and add the following commands
+            #docker build . -t node-app-todo
+            #docker run -d --name node-app-container -p 8000:8000 node-app-todo
+        .Save
+
+
+3.> Setup GitHub
+    Setting up SSH key on GitHub. This will give GitHub the access of the VM.
+        .Go to Settings
+        .SSH and GPG keys
+        .Click on New SSH Key
+        .Provide Title
+        .Copy the Public Key
+        .Click Add SSH
+        .Authenticate token from phone 
+
     
