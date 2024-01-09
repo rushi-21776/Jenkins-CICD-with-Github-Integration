@@ -1,0 +1,18 @@
+This is a Step-by-Step guide to integrate Jenkins with Github
+
+We have a project written on NodeJS called as todo-list-app. We will create a Docker image of it using Dockerfile and will deploy the project on the node on port no.8000.
+Jenkins runs on port 8080
+Note:- Make sure to open all required ports and configure them in Security Grroup.
+
+Steps:-
+
+1.> First create an Instance or a Virtual Machine.
+    Run the following commands on the mchine to install Jenkins, java, docker, nodeJS.
+    #sudo apt update
+    #sudo apt install openjdk-11-jre
+    #java -version
+    #sudo wget -O /usr/share/keyrings/jenkins-keyring.asc https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+    #echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/ | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
+    #sudo apt-get update
+    #sudo apt-get install jenkins
+    #
